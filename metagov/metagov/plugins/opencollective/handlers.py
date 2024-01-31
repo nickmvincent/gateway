@@ -28,7 +28,7 @@ class NonBotAccountError(PluginAuthError):
 
 class NotOneCollectiveError(PluginAuthError):
     default_code = "not_one_collective"
-    default_detail = f"The Open Collective account must be a member of exactly 1 collective."
+    default_detail = f"The Open Collective account must be a member of exactly 1 collective or organization."
 
 class InsufficientPermissions(PluginAuthError):
     default_code = "insufficient_permissions"
@@ -114,6 +114,7 @@ class OpenCollectiveRequestHandler(PluginRequestHandler):
                 plugin.initialize()
             except PluginErrorInternal as e:
                 plugin.delete()
+                logger.info(e)
                 if 'permission' in e.detail:
                     raise InsufficientPermissions
                 else:

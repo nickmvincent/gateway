@@ -103,6 +103,27 @@ query Collective($slug: String) {
 }
 """
 
+organization = """
+query Organization($slug: String) {
+    organization(id: null, slug: $slug, githubHandle: null, throwIfMissing: null) {
+        id
+        legacyId
+        name
+        type
+        childrenAccounts(limit: 50, offset: 0) {
+            totalCount
+            nodes {
+                id
+                legacyId
+                slug
+                name
+                type
+            }
+        }
+    }
+}
+"""
+
 expense = (
     """
 query Expense($reference: ExpenseReferenceInput) {
@@ -163,7 +184,7 @@ me = (
     id
     name
     email
-    memberOf(accountType: COLLECTIVE) {
+    memberOf(accountType:[COLLECTIVE, ORGANIZATION]) {
       totalCount
       nodes {
         account {

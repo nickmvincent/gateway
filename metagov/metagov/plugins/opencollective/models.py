@@ -49,7 +49,12 @@ class OpenCollective(Plugin):
         response = self.run_query(Queries.collective, {"slug": slug})
         result = response["collective"]
         if result is None:
-            raise PluginErrorInternal(f"Collective '{slug}' not found.")
+            # assume the user is using an org
+            response = self.run_query(Queries.organization, {"slug": slug})
+
+            result = response["organization"]
+            if response is None:
+                raise PluginErrorInternal(f"Collective or organization '{slug}' not found.")
 
         # Create webhook for listening to events on OC
         self.create_webhook()
